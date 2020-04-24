@@ -1,1 +1,1 @@
-# sagemaker-ngc-examples
+# amazon-sagemaker-ngc-examples

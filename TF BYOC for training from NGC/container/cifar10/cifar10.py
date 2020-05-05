@@ -18,8 +18,6 @@ import argparse
 import functools
 import os
 
-import resnet_model
-
 import tensorflow as tf
 from tensorflow.keras.applications.resnet50 import ResNet50
 from tensorflow.keras.preprocessing import image

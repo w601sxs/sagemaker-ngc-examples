@@ -48,11 +48,6 @@ config_file = '/workspace/bert/bert_config.json'
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-s3_client = boto3.client('s3')
-s3_client.download_file(bucket, 'model.pth', 'model.pth')
-#os.system('tar -xvf model.tar.gz')
-
-
 class ScoringService(object):
     model = None  # Where we keep the model when it's loaded
 

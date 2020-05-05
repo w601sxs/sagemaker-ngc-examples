@@ -32,8 +32,6 @@ from tensorflow import keras
 import logging
 
 
-
-
 INPUT_TENSOR_NAME = "inputs"
 SIGNATURE_NAME = "serving_default"
 
@@ -69,7 +67,7 @@ def model_fn(features, labels, mode):
 
     #network = resnet_model.cifar10_resnet_v2_generator(RESNET_SIZE, NUM_CLASSES)
     
-	#--- Start model description
+    #--- Start model description
     inputs = tf.reshape(inputs, [-1, HEIGHT, WIDTH, DEPTH])
     model_input = inputs
     base_model = ResNet50(weights= None, include_top=False, input_tensor = model_input)
@@ -81,7 +79,7 @@ def model_fn(features, labels, mode):
     x = Flatten()(x)
     logits = Dense(NUM_CLASSES)(x)
 
-	#--- End model description
+    #--- End model description
     
     #logits = network(inputs, mode == tf.estimator.ModeKeys.TRAIN)
     predictions = {

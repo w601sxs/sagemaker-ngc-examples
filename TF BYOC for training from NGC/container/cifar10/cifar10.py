@@ -18,8 +18,6 @@ import argparse
 import functools
 import os
 
-import resnet_model
-
 import tensorflow as tf
 from tensorflow.keras.applications.resnet50 import ResNet50
 from tensorflow.keras.preprocessing import image
@@ -30,8 +28,6 @@ from tensorflow.keras.layers import Flatten
 import numpy as np
 from tensorflow import keras
 import logging
-
-
 
 
 INPUT_TENSOR_NAME = "inputs"
@@ -69,7 +65,7 @@ def model_fn(features, labels, mode):
 
     #network = resnet_model.cifar10_resnet_v2_generator(RESNET_SIZE, NUM_CLASSES)
     
-	#--- Start model description
+    #--- Start model description
     inputs = tf.reshape(inputs, [-1, HEIGHT, WIDTH, DEPTH])
     model_input = inputs
     base_model = ResNet50(weights= None, include_top=False, input_tensor = model_input)
@@ -81,7 +77,7 @@ def model_fn(features, labels, mode):
     x = Flatten()(x)
     logits = Dense(NUM_CLASSES)(x)
 
-	#--- End model description
+    #--- End model description
     
     #logits = network(inputs, mode == tf.estimator.ModeKeys.TRAIN)
     predictions = {

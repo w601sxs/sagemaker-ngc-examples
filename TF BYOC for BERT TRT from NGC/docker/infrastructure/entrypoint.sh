@@ -41,7 +41,7 @@ then
     
     # we have our fine-tuned model in $finetuned_modeldir, now convert to TRT
     cd $bert_dir/trt 
-    cp /opt/aws_sagemaker/infrastructure/get_latest_tf_model.py $bert_dir/trt 
+    cp /opt/aws_sagemaker/infrastructure/get_tf_model.py $bert_dir/trt 
     export latest_model_name=$(python get_tf_model.py $finetuned_modeldir/model.ckpt-*.meta)
     python builder.py -m $latest_model_name -o $model_path/bert_large_384.engine -b 1 -s 384 --fp16 -c $pretrained_modeldir
     

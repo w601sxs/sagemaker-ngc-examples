@@ -9,7 +9,7 @@ This repository is a collection of notebooks that will show you how to use NGC c
 With more than 80 containers and over a 100 models, NGC is quickly becoming the defacto tool for data scientists and  application developers for their AI software needs.  
 
 * **Containers** - The deep learning frameworks and HPC containers from NGC are GPU-optimized and tested on NVIDIA GPUs for scale and performance. With a one-click operation, you can easily pull, scale, and run containers in your environment. The deep learning containers from NGC are developed on a monthly basis, packed with latest features that help extract the maximum performance from your exisiting GPUs. 
-![CONTAINER PERFORMANCE](https://github.com/w601sxs/sagemaker-ngc-examples/blob/master/Screen%20Shot%202020-05-06%20at%204.46.02%20PM.png width = "25" height = "25")
+![CONTAINER PERFORMANCE](https://github.com/w601sxs/sagemaker-ngc-examples/blob/master/Screen%20Shot%202020-05-06%20at%204.46.02%20PM.png)
 
 * **Models** - NGC provides pretrained models for applications such as: image classification, object detection, language translation, text to speech, recommender engines, sentiment analysis and many more. So if you’re looking to build on existing models to extend your capabilities or customise models with transfer learning to suit your bespoke use cases NGC has you covered. The results from MlPerf competioton shows how our models optimized for GPUs reach the solution in teh shortest time.  
 ![MLPERF CHART](https://github.com/w601sxs/sagemaker-ngc-examples/blob/master/Screen%20Shot%202020-05-06%20at%205.01.49%20PM.png)

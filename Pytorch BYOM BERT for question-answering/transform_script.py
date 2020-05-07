@@ -1580,8 +1580,8 @@ def model_fn(model_dir):
     config = BertConfig.from_json_file('bert_config.json')
     model = BertForQuestionAnswering(config)
     try:
-        model.load_state_dict(torch.load(os.path.join(model_dir,'model.pth'), map_location='cpu')["model"])
+        model.load_state_dict(torch.load(os.path.join(model_dir,'bert_base_qa.pt'), map_location='cpu')["model"])
     except:
-        model.load_state_dict(torch.load('/opt/ml/model/opt/ml/model/model.pth', map_location='cpu')["model"])
+        model.load_state_dict(torch.load('/opt/ml/model/opt/ml/model/bert_base_qa.pt', map_location='cpu')["model"])
     return model
 

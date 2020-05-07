@@ -12,7 +12,7 @@ With more than 80 containers and over a 100 models, NGC is quickly becoming the 
 ![CONTAINER PERFORMANCE](https://github.com/w601sxs/sagemaker-ngc-examples/blob/master/Screen%20Shot%202020-05-06%20at%204.46.02%20PM.png)
 
 * **Models** - NGC provides pretrained models for applications such as: image classification, object detection, language translation, text to speech, recommender engines, sentiment analysis and many more. So if you’re looking to build on existing models to extend your capabilities or customise models with transfer learning to suit your bespoke use cases NGC has you covered. The results from MlPerf competioton shows how our models optimized for GPUs reach the solution in teh shortest time.  
-
+![MLPERF CHART](https://github.com/w601sxs/sagemaker-ngc-examples/blob/master/Screen%20Shot%202020-05-06%20at%205.01.49%20PM.png)
 * **Resources** - NGC offers step-by-step instructions and scripts for creating deep learning models with code samples, making it easy to integrate the models into your applications. These examples come with sample performance and accuracy metrics so you can compare your results. Leveraging our expert guidance on building DL models for image classification, language translation, text-to-speech and more, you can quickly build performance-optimized models by easily adjusting the hyperparameters.
 * **Helm Charts** - NGC offers a range of Helm Charts that make it easy to deploy powerful NVIDIA and third-party software which your IT teams can install on Kubernetes clusters to give users faster access to run their workloads.
 

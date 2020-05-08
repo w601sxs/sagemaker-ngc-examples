@@ -116,6 +116,7 @@ class SSD300(nn.Module):
         # For SSD 300, shall return nbatch x 8732 x {nlabels, nlocs} results
         return locs, confs
 
+# this function tells the endpoitn how to make predictions and how to package them to send back
 def predict_fn(input_data, model):
     # run prediction
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -126,6 +127,7 @@ def predict_fn(input_data, model):
     pred_dict = {'pred1':pred[0].detach().cpu().numpy(),'pred2':pred[1].detach().cpu().numpy()}
     return pred_dict
         
+# this function loads our model from s3, or if that fails, from the NGC repo
 def model_fn(model_dir):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = SSD300(backbone=ResNet('resnet50'))
@@ -142,6 +144,7 @@ def model_fn(model_dir):
     model.eval()
     return model 
 
+# this function handles our input data and reshapes it back into an image
 def input_fn(request_body, request_content_type):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if(request_content_type == 'application/x-npy'):

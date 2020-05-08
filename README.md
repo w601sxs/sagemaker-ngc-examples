@@ -1,6 +1,16 @@
 # Amazon SageMaker and NGC Examples
 
-This repository is a collection of notebooks that will show you how to use NGC containers and models withing Amazon SageMaker.
+This repository is a collection of notebooks that will show you how to use NGC containers and models withing Amazon SageMaker. 
+This repository includes the following examples:
+
+1. Using an NGC PyTorch container to Fine tune a BERT model
+1. Using an NGC pretrained BERT model for Question-answering in PyTorch
+1. Deploy an NGC SSD model for PyTorch on SageMaker
+1. Compile a PyTorch model from NGC to Neo and deploy onto SageMaker
+1. Train and Deploy a TensorFlow model to TensorRT
+1. Deploy an NGC model for TensorFlow on SageMaker
+1. Train a TensorFlow model on the CIFAR10 dataset using an NGC TensorFlow container
+
 
 ## NVIDIA NGC
 
@@ -21,11 +31,5 @@ With more than 80 containers and over a 100 models, NGC is quickly becoming the 
 
 NGC carries lots of great content from NVIDIA and our partners that can be used for your AI applications. But if you’re after access to some exclusive applications, you can [SIGN UP HERE](https://ngc.nvidia.com/signup). 
 
-## Examples
-
-This repository includes the following examples:
-
-1.
-1.
 1.
 

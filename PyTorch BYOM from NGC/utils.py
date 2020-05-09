@@ -26,6 +26,8 @@ import time
 import bz2
 import pickle
 from math import sqrt
+from skimage.io import imread
+from skimage.transform import resize
 
 
 # This function is from https://github.com/kuangliu/pytorch-ssd.
@@ -593,3 +595,44 @@ def draw_patches(img, bboxes, labels, order="xywh", label_map={}):
         ax.text(cx-0.5*w, cy-0.5*h, label, ha="center", va="center", size=15, bbox=bbox_props)
     plt.show()
 
+
+def load_image(image_path):
+    """Code from Loading_Pretrained_Models.ipynb - a Caffe2 tutorial"""
+    img = skimage.img_as_float(imread(image_path))
+    if len(img.shape) == 2:
+        img = np.array([img, img, img]).swapaxes(0,2)
+    return img
+
+def rescale(img, input_height, input_width):
+    """Code from Loading_Pretrained_Models.ipynb - a Caffe2 tutorial"""
+    aspect = img.shape[1]/float(img.shape[0])
+    if(aspect>1):
+        # landscape orientation - wide image
+        res = int(aspect * input_height)
+        imgScaled = resize(img, (input_width, res))
+    if(aspect<1):
+        # portrait orientation - tall image
+        res = int(input_width/aspect)
+        imgScaled = resize(img, (res, input_height))
+    if(aspect == 1):
+        imgScaled = resize(img, (input_width, input_height))
+    return imgScaled
+
+def crop_center(img,cropx,cropy):
+    """Code from Loading_Pretrained_Models.ipynb - a Caffe2 tutorial"""
+    y,x,c = img.shape
+    startx = x//2-(cropx//2)
+    starty = y//2-(cropy//2)
+    return img[starty:starty+cropy,startx:startx+cropx]
+
+def normalize(img, mean=128, std=128):
+    img = (img * 256 - mean) / std
+    return img
+
+def prepare_input(img_uri):
+    img = load_image(img_uri)
+    img = rescale(img, 300, 300)
+    img = crop_center(img, 300, 300)
+    img = normalize(img)
+
+    return img

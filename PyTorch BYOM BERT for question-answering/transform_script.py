@@ -9,6 +9,7 @@ from io import StringIO
 from types import SimpleNamespace
 import logging
 import shutil
+import unicodedata
 import tarfile
 import tempfile
 import torch
@@ -851,7 +852,19 @@ class BertForQuestionAnswering(BertPreTrainedModel):
         else:
             return start_logits, end_logits
 
-
+def load_vocab(vocab_file):
+    """Loads a vocabulary file into a dictionary."""
+    vocab = collections.OrderedDict()
+    index = 0
+    with open(vocab_file, "r", encoding="utf-8") as reader:
+        while True:
+            token = reader.readline()
+            if not token:
+                break
+            token = token.strip()
+            vocab[token] = index
+            index += 1
+    return vocab
 
 def whitespace_tokenize(text):
     """Runs basic whitespace cleaning and splitting on a piece of text."""
@@ -1539,25 +1552,40 @@ config = {'attention_probs_dropout_prob': 0.1,
 json_obj = json.dumps(config)
 with open('bert_config.json', 'w') as f:
     f.write(json_obj)
+    
+os.system('wget https://caltech256-bucket.s3.amazonaws.com/vocab')
 
 # do some kind of split based on a character that splits off the 3 inputs 
 def input_fn(request_body, request_content_type):
     if(request_content_type =='application/json'):
+        print('request_body: ',request_body)
         input_data = json.load(StringIO(request_body))
-        input_data = input_data['instances']
-        if(len(input_data.keys())==3):
-            pass
-        else:
-            raise Exception('Please pass in your input_ids, segment_ids, and input_mask as json')
+        print('input_data: ', input_data)
+        context = input_data['context']
+        question = input_data['question']
+        doc_tokens = context.split()
+        tokenizer = BertTokenizer('vocab', do_lower_case=True, max_len=384)
+        query_tokens = tokenizer.tokenize(question)
+        feature = preprocess_tokenized_text(doc_tokens, 
+                                            query_tokens, 
+                                            tokenizer, 
+                                            max_seq_length=384, 
+                                            max_query_length=64)
+        tensors_for_inference, tokens_for_postprocessing = feature
+
+        input_ids = np.array(tensors_for_inference.input_ids, dtype=np.int64)
+        segment_ids = np.array(tensors_for_inference.segment_ids, dtype=np.int64)
+        input_mask = np.array(tensors_for_inference.input_mask, dtype=np.int64)   
+        input_data = [input_ids, segment_ids, input_mask]
     elif(request_content_type == 'application/x-npy'):
         try:
             input_data = np.frombuffer(request_body, dtype=int)
         except:
             input_data = np.array(request_body, dtype=int)
-    if(input_data.shape[0]%3==0):
-        input_data = torch.tensor(np.reshape(input_data,(3,384)), dtype=torch.long) 
-    else:
-        input_data = torch.tensor(np.reshape(input_data[16:],(3,384)), dtype=torch.long)  
+        if(input_data.shape[0]%3==0):
+            input_data = np.reshape(input_data,(3,384))
+        else:
+            input_data = np.reshape(input_data[16:],(3,384)) 
     return input_data
 
 def predict_fn(input_data, model):
@@ -1566,10 +1594,10 @@ def predict_fn(input_data, model):
     model.to(device)
     model.eval()
     with torch.no_grad():
-        inp_len = input_data.shape[1]
-        input_ids = torch.tensor(torch.reshape(input_data[0], (1,inp_len)), dtype=torch.long, device=device)
-        segment_ids = torch.tensor(torch.reshape(input_data[1], (1,inp_len)), dtype=torch.long, device=device)
-        input_mask = torch.tensor(torch.reshape(input_data[2],(1,inp_len)), dtype=torch.long, device=device)
+        inp_len = 384 #input_data.shape[1]
+        input_ids = torch.tensor(np.reshape(input_data[0], (1,inp_len)), dtype=torch.long, device=device)
+        segment_ids = torch.tensor(np.reshape(input_data[1], (1,inp_len)), dtype=torch.long, device=device)
+        input_mask = torch.tensor(np.reshape(input_data[2],(1,inp_len)), dtype=torch.long, device=device)
         start_logits, end_logits = model(input_ids, segment_ids, input_mask)
     # post-processing
         start_logits = start_logits[0].detach().cpu().tolist() 

@@ -27,7 +27,6 @@ class ResNet(nn.Module):
         if backbone_path:
             backbone.load_state_dict(torch.load(backbone_path))
 
-
         self.feature_extractor = nn.Sequential(*list(backbone.children())[:7])
 
         conv4_block1 = self.feature_extractor[-1][0]
@@ -113,10 +112,10 @@ class SSD300(nn.Module):
         # Feature Map 38x38x4, 19x19x6, 10x10x6, 5x5x6, 3x3x4, 1x1x4
         locs, confs = self.bbox_view(detection_feed, self.loc, self.conf)
 
-        # For SSD 300, shall return nbatch x 8732 x {nlabels, nlocs} results
+        # For SSD 300, shall return nbatch x 8732 x {nlabels, nlocs} results, to get bboxes, use decoder
         return locs, confs
 
-# this function tells the endpoitn how to make predictions and how to package them to send back
+# this function tells the endpoint how to make predictions and how to package them to send back
 def predict_fn(input_data, model):
     # run prediction
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -124,10 +123,11 @@ def predict_fn(input_data, model):
     model.eval()
     with torch.no_grad():
         pred = model(input_data)
-    pred_dict = {'pred1':pred[0].detach().cpu().numpy(),'pred2':pred[1].detach().cpu().numpy()}
+    #pred1, pred2 = pred[0].detach().cpu().numpy(),pred[1].detach().cpu().numpy()
+    pred_dict = {'pred1':pred[0].detach().cpu().numpy(), 'pred2':pred[1].detach().cpu().numpy()}
     return pred_dict
         
-# this function loads our model from s3, or if that fails, from the NGC repo
+# this function loads our model weights from s3, or if that fails, from the NGC repo
 def model_fn(model_dir):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = SSD300(backbone=ResNet('resnet50'))
@@ -146,12 +146,13 @@ def model_fn(model_dir):
 
 # this function handles our input data and reshapes it back into an image
 def input_fn(request_body, request_content_type):
+    """this function handles our input data and reshapes it back into an image"""
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if(request_content_type == 'application/x-npy'):
         try:
-            input_data = np.frombuffer(request_body, dtype=int)
+            input_data = np.frombuffer(request_body, dtype=np.float32)
         except:
-            input_data = np.array(request_body, dtype=int)
+            input_data = np.array(request_body, dtype=np.float32)
     try:
         input_data = torch.tensor(np.reshape(input_data,(1,3,300,300)), dtype=torch.float32, device=device) # this needs to be a torch tensor 
     except:

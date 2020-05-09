@@ -13,15 +13,11 @@ from file_utils import PYTORCH_PRETRAINED_BERT_CACHE
 from modeling import BertForQuestionAnswering, BertConfig, WEIGHTS_NAME, CONFIG_NAME
 from tokenization import (BasicTokenizer, BertTokenizer, whitespace_tokenize)
 from types import SimpleNamespace
-
 import torch
-
-#from fast_bert.prediction import BertClassificationPredictor # need to replace this with the NGC model
-
-#from fast_bert.utils.spellcheck import BingSpellCheck not using this 
 from pathlib import Path
-
 import warnings
+from helper_funcs import *
+
 
 warnings.filterwarnings("ignore", message="numpy.dtype size changed")
 warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
@@ -43,7 +39,7 @@ bucket = params['save_to_s3']
 
 MODEL_PATH = 'model.pth' #"pytorch_model.bin"
 
-vocab_file =  '/workspace/bert/data/bert_vocab.txt'
+vocab_file =  '/workspace/bert/vocab'
 config_file = '/workspace/bert/bert_config.json'
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -56,13 +52,16 @@ class ScoringService(object):
 
         config = BertConfig.from_json_file(config_file)
         model = BertForQuestionAnswering(config)
-        model.load_state_dict(torch.load(MODEL_PATH, map_location=device)["model"])
+        model.load_state_dict(torch.load(MODEL_PATH, map_location='cpu')["model"])
+        model.to(device)
         cls.model = model
 
         return cls.model
 
     @classmethod
-    def predict(cls, context, question, bing_key=None, max_seq_length=384, max_query_length=64):
+    def predict(cls, context, question, bing_key=None, max_seq_length=384, max_query_length=64,
+               n_best_size=3, do_lower_case=True, can_give_negative_answer=True, max_answer_length=30, 
+               null_score_diff_threshold=-11.0):
         """For the input, do the predictions and return them.
         Args:
             input (a pandas dataframe): The data on which to do the predictions. There will be
@@ -70,7 +69,7 @@ class ScoringService(object):
         predictor_model = cls.get_predictor_model()
         
         doc_tokens = context.split()
-        tokenizer = BertTokenizer(vocab_file, do_lower_case=True, max_len=512)
+        tokenizer = BertTokenizer(vocab_file, do_lower_case=True, max_len=max_seq_length)
         query_tokens = tokenizer.tokenize(question)
         feature = preprocess_tokenized_text(doc_tokens, 
                                             query_tokens, 
@@ -85,7 +84,7 @@ class ScoringService(object):
 
         # run prediction
         with torch.no_grad():
-            start_logits, end_logits = predictor_model.predict(input_ids, segment_ids, input_mask)
+            start_logits, end_logits = predictor_model(input_ids, segment_ids, input_mask)
 
         # post-processing
         start_logits = start_logits[0].detach().cpu().tolist()
@@ -94,13 +93,7 @@ class ScoringService(object):
                                  start_logits, end_logits, n_best_size, 
                                  max_answer_length, do_lower_case, 
                                  can_give_negative_answer, 
-                                 null_score_diff_threshold)
-        #response = bert_end.predict(payload.tobytes(), initial_args={'ContentType':'application/x-npy'}) 
-        
-        #prediction = predictor_model.predict(text)
-#         if bing_key:
-#             spellChecker = BingSpellCheck(bing_key)
-#             text = spellChecker.spell_check(text) # need to do the transforms here
+                                 null_score_diff_threshold)        
 
         return prediction
 
@@ -152,11 +145,14 @@ def transformation():
     just means one prediction per line, since there's a single column.
     """
     data = None
-    text = None
+    #text = None
 
     if flask.request.content_type == "application/json":
         print("calling json launched")
         data = flask.request.get_json(silent=True)
+        print(data)
+        #data = json.loads(data)
+        #print(data)
 
         context = data["context"] # need to get the context and question here 
         question = data["question"]
@@ -172,11 +168,11 @@ def transformation():
             mimetype="text/plain",
         )
 
-    print("Invoked with text: {}.".format(text.encode("utf-8")))
+    #print("Invoked with text: {}.".format(text.encode("utf-8")))
 
     # Do the prediction
     predictions = ScoringService.predict(context, question) 
 
-    result = json.dumps(predictions[:10]) # may need to fix this 
+    result = json.dumps(predictions) # may need to fix this 
 
     return flask.Response(response=result, status=200, mimetype="application/json")

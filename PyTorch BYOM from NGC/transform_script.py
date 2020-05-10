@@ -150,9 +150,9 @@ def input_fn(request_body, request_content_type):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if(request_content_type == 'application/x-npy'):
         try:
-            input_data = np.frombuffer(request_body, dtype=np.float32)
+            input_data = np.frombuffer(request_body, dtype=np.float64)
         except:
-            input_data = np.array(request_body, dtype=np.float32)
+            input_data = np.array(request_body, dtype=np.float64)
     try:
         input_data = torch.tensor(np.reshape(input_data,(1,3,300,300)), dtype=torch.float32, device=device) # this needs to be a torch tensor 
     except:

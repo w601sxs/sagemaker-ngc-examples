@@ -27,6 +27,7 @@ With more than 80 containers and over a 100 models, NGC is quickly becoming the 
 ![](https://github.com/w601sxs/sagemaker-ngc-examples/blob/master/MLPerf.png)
 
 * **Resources** - NGC offers step-by-step instructions and scripts for creating deep learning models with code samples, making it easy to integrate the models into your applications. These examples come with sample performance and accuracy metrics so you can compare your results. Leveraging our expert guidance on building DL models for image classification, language translation, text-to-speech and more, you can quickly build performance-optimized models by easily adjusting the hyperparameters.
+
 * **Helm Charts** - NGC offers a range of Helm Charts that make it easy to deploy powerful NVIDIA and third-party software which your IT teams can install on Kubernetes clusters to give users faster access to run their workloads.
 
 NGC carries lots of great content from NVIDIA and our partners that can be used for your AI applications. But if you’re after access to some exclusive applications, you can [SIGN UP HERE](https://ngc.nvidia.com/signup). 

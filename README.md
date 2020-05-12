@@ -3,14 +3,13 @@
 This repository is a collection of notebooks that will show you how to use NGC containers and models withing Amazon SageMaker. 
 This repository includes the following examples:
 
-1. Using an NGC PyTorch container to Fine tune a BERT model
-1. Using an NGC pretrained BERT model for Question-answering in PyTorch
-1. Deploy an NGC SSD model for PyTorch on SageMaker
-1. Compile a PyTorch model from NGC to Neo and deploy onto SageMaker
-1. Train and Deploy a TensorFlow model to TensorRT
-1. Deploy an NGC model for TensorFlow on SageMaker
-1. Train a TensorFlow model on the CIFAR10 dataset using an NGC TensorFlow container
-
+1. Using an NGC PyTorch container to Fine-tune a BERT model
+2. Using an NGC pretrained BERT model for Question-Answering in PyTorch
+3. Deploy an NGC SSD model for PyTorch on SageMaker
+4. Compile a PyTorch model from NGC to Neo and deploy onto SageMaker
+5. Train and Deploy a TensorFlow BERT model using the NGC container/model to TensorRT
+6. Using an NGC TensorFlow container on SageMaker
+7. Deploy an NGC model for TensorFlow on SageMaker
 
 ## NVIDIA NGC
 

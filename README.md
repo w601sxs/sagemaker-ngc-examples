@@ -19,11 +19,11 @@ With more than 80 containers and over a 100 models, NGC is quickly becoming the 
 
 * **Containers** - The deep learning frameworks and HPC containers from NGC are GPU-optimized and tested on NVIDIA GPUs for scale and performance. With a one-click operation, you can easily pull, scale, and run containers in your environment. The deep learning containers from NGC are developed on a monthly basis, packed with latest features that help extract the maximum performance from your exisiting GPUs. 
 
-![](https://github.com/w601sxs/sagemaker-ngc-examples/blob/master/Container%20Performance%20Charts.png)
+![](https://github.com/w601sxs/sagemaker-ngc-examples/blob/master/pictures/Container%20Performance%20Charts.png)
 
 * **Models** - NGC provides pretrained models for applications such as: image classification, object detection, language translation, text to speech, recommender engines, sentiment analysis and many more. So if you’re looking to build on existing models to extend your capabilities or customise models with transfer learning to suit your bespoke use cases NGC has you covered. The results from MlPerf competioton shows how our models optimized for GPUs reach the solution in the fastest time possible.  
 
-![](https://github.com/w601sxs/sagemaker-ngc-examples/blob/master/MLPerf.png)
+![](https://github.com/w601sxs/sagemaker-ngc-examples/blob/master/pictures/MLPerf.png)
 
 * **Resources** - NGC offers step-by-step instructions and scripts for creating deep learning models with code samples, making it easy to integrate the models into your applications. These examples come with sample performance and accuracy metrics so you can compare your results. Leveraging our expert guidance on building DL models for image classification, language translation, text-to-speech and more, you can quickly build performance-optimized models by easily adjusting the hyperparameters.
 
